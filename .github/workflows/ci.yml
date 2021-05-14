@@ -11,10 +11,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build Docker Image
-        run: docker build -t '${{ github.actor }}/strongswan' .
+      - name: Check out Repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Log into Docker Hub
         run: echo '${{ secrets.DOCKER_TOKEN }}' | docker login -u ${{ github.actor }} --password-stdin
-      - name: Push Docker Image
-        run: docker push '${{ github.actor }}/strongswan'
+      - name: Build and push Docker image
+        run: |
+          docker buildx create --name mybuilder
+          docker buildx use mybuilder
+          docker buildx build --platform linux/amd64,linux/arm64 --push -t '${{ github.actor }}/strongswan' .
