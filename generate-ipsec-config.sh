@@ -7,7 +7,7 @@ IPSEC_DIR="${IPSEC_DIR:-"${ETC}/ipsec.d"}"
 IPSEC_CONF="${IPSEC_CONF:-"${ETC}/ipsec.conf"}"
 IPSEC_SECRETS="${IPSEC_SECRETS:-"${ETC}/ipsec.secrets"}"
 
-VPN_DOMAIN_REVERSED="$(tr '.' $'\n' <<< "${VPN_DOMAIN}" | tac | paste -s -d '.')"
+VPN_DOMAIN_REVERSED="$(tr '.' $'\n' <<< "${VPN_DOMAIN}" | tac | paste -s -d '.' -)"
 
 mkdir -p "${IPSEC_DIR}"/{cacerts,certs,private}
 
