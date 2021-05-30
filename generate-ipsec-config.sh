@@ -110,12 +110,21 @@ cat > "${IPSEC_SECRETS}" <<EOF
 : RSA "$(basename "${SERVER_KEY}")"
 EOF
 
-UUID_NAMESPACE="$(uuidgen --sha1 --namespace @dns --name "${VPN_DOMAIN}")"
-UUID_CA_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${CA_CERT_BASENAME}")"
-UUID_SERVER_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${SERVER_CERT_BASENAME}")"
-UUID_P12_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${CLIENT_CERT_P12_BASENAME}")"
-UUID_VPN_SETTINGS="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name 'com.apple.vpn.managed')"
-UUID_CONFIGURATION="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name 'configuration')"
+if uuidgen --sha1 --namespace @dns --name example.org &>/dev/null; then
+  UUID_NAMESPACE="$(uuidgen --sha1 --namespace @dns --name "${VPN_DOMAIN}")"
+  UUID_CA_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${CA_CERT_BASENAME}")"
+  UUID_SERVER_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${SERVER_CERT_BASENAME}")"
+  UUID_P12_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${CLIENT_CERT_P12_BASENAME}")"
+  UUID_VPN_SETTINGS="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name 'com.apple.vpn.managed')"
+  UUID_CONFIGURATION="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name 'configuration')"
+else
+  UUID_NAMESPACE="$(uuidgen)"
+  UUID_CA_CERT="$(uuidgen)"
+  UUID_SERVER_CERT="$(uuidgen)"
+  UUID_P12_CERT="$(uuidgen)"
+  UUID_VPN_SETTINGS="$(uuidgen)"
+  UUID_CONFIGURATION="$(uuidgen)"
+fi
 
 cat > "${CLIENT_MOBILECONFIG}" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
