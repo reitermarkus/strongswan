@@ -92,22 +92,23 @@ conn ikev2-vpn
   left=%any
   leftid="@${VPN_DOMAIN}"
   leftauth=pubkey
-  leftca="$(basename "${CA_CERT}")"
-  leftcert="$(basename "${SERVER_CERT}")"
+  leftca="${CA_CERT}"
+  leftcert="${SERVER_CERT}"
   leftsendcert=always
   leftsubnet=0.0.0.0/0
 
   right=%any
   rightid="client@${VPN_DOMAIN}"
   rightauth=pubkey
-  rightcert="$(basename "${CLIENT_CERT}")"
+  rightca=%same
+  rightcert="${CLIENT_CERT}"
   rightsourceip=%dhcp
 
   eap_identity=%identity
 EOF
 
 cat > "${IPSEC_SECRETS}" <<EOF
-: RSA "$(basename "${SERVER_KEY}")"
+: RSA "${SERVER_KEY}"
 EOF
 
 if uuidgen --sha1 --namespace @dns --name example.org &>/dev/null; then
