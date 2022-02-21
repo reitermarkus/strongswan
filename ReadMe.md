@@ -34,7 +34,7 @@ services:
 
 You can either find the certificate and configuartion files directly on the host in the mounted directory specified or alternatively you can copy them out of the running container using
 
-```
+```sh
 docker cp strongswan:/etc/ipsec.d/client.mobileconfig .
 docker cp strongswan:/etc/ipsec.d/client.cert.p12 .
 ```
