@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
   strongswan:
     container_name: strongswan
-    image: reitermarkus/strongswan
+    image: ghcr.io/reitermarkus/strongswan
     volumes:
       - /etc/ipsec.d:/etc/ipsec.d
     environment:
