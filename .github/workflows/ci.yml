@@ -36,6 +36,11 @@ jobs:
             -e WIFI_SSID='Example WiFi' \
             -e VPN_P12_PASSWORD='password' \
             '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}' -- 'true'
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -43,5 +48,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
