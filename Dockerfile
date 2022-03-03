@@ -1,6 +1,6 @@
-FROM alpine
+FROM alpine:3.15.0
 
-RUN apk add --no-cache bash strongswan openssl util-linux
+RUN apk add --no-cache bash~=5.1 strongswan~=5.9.1 openssl~=1.1 util-linux~=2.37
 
 COPY generate-ipsec-config.sh /generate-ipsec-config.sh
 COPY entrypoint.sh /entrypoint.sh

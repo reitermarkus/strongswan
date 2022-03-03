@@ -2,50 +2,6 @@ on: [pull_request, push]
 
 name: CI
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
-  shellcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: azohra/shell-linter@v0.4.0
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out Repository
-        uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run Docker image
-        run: |
-          docker build . -t '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}'
-          docker run \
-            -e VPN_NAME='Example VPN' \
-            -e VPN_DOMAIN='vpn.example.org' \
-            -e WIFI_SSID='Example WiFi' \
-            -e VPN_P12_PASSWORD='password' \
-            '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}' -- 'true'
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: ${{ steps.meta.outputs.tags }}
+  ci:
+    uses: reitermarkus/.github/.github/workflows/docker-build-push.yml@main
