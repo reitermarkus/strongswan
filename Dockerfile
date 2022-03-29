@@ -1,4 +1,4 @@
-FROM alpine:3.15.0
+FROM alpine:3.15.3
 
 RUN apk add --no-cache bash~=5.1 strongswan~=5.9.1 openssl~=1.1 util-linux~=2.37
 
