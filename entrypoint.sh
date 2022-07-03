@@ -6,6 +6,7 @@ set -euo pipefail
 /configure-ipsec.sh
 /generate-ha-config.sh
 
+exit_code=0
 "${@}" &
 server_pid=$!
 
