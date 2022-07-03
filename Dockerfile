@@ -58,6 +58,7 @@ VOLUME /etc/ipsec.d
 
 EXPOSE 500/udp
 EXPOSE 4500/udp
+EXPOSE 4510/udp
 
 CMD ["ipsec", "start", "--nofork"]
 ENTRYPOINT ["/entrypoint.sh"]
