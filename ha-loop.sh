@@ -18,7 +18,7 @@ if [[ ${#remote_ips[@]} -ge 1 ]]; then
 
   if [[ "${remote_ip}" != "${current_remote_ip}" ]]; then
     if [[ ${#remote_ips[@]} -ge 2 ]]; then
-      echo "Warning: Multiple remotes found (${remote_ips}), choosing first."
+      echo "Warning: Multiple remotes found (${remote_ips[*]}), choosing first."
     fi
 
     echo "Updating high availability remote to '${remote_ip}'."
