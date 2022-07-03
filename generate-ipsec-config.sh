@@ -7,12 +7,12 @@ ipsec_dir="${IPSEC_DIR:-"${etc}/ipsec.d"}"
 ipsec_conf="${IPSEC_CONF:-"${etc}/ipsec.conf"}"
 ipsec_secrets="${IPSEC_SECRETS:-"${etc}/ipsec.secrets"}"
 
-vpn_name="${VPN_NAME}"
-vpn_domain="${VPN_DOMAIN}"
+vpn_name="${VPN_NAME?}"
+vpn_domain="${VPN_DOMAIN?}"
 vpn_domain_reversed="$(tr '.' $'\n' <<< "${vpn_domain}" | tac | paste -s -d '.' -)"
-vpn_p12_password="${VPN_P12_PASSWORD}"
+vpn_p12_password="${VPN_P12_PASSWORD?}"
 
-wifi_ssid="${WIFI_SSID}"
+wifi_ssid="${WIFI_SSID?}"
 
 SEARCH_DOMAINS="${SEARCH_DOMAINS:-local}"
 search_domains=''
