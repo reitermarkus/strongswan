@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+if [[ -n "${DEBUG-}" ]]; then
+  set -x
+fi
+
 . /common.sh
 
 if [[ -z "${POD_IP-}" ]]; then
