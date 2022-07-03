@@ -11,15 +11,15 @@ fi
 local_ip="${POD_IP}"
 secret="${HA_SECRET}"
 
-# sed -i -E 's/#\s+(autobalance.*)/\1/' /etc/strongswan.d/charon/ha.conf
-# sed -i -E 's/#\s+(fifo_interface.*)/\1/' /etc/strongswan.d/charon/ha.conf
-# sed -i -E 's/#\s+(heartbeat_delay.*)/\1/' /etc/strongswan.d/charon/ha.conf
-# sed -i -E 's/#\s+(heartbeat_timeout.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(autobalance.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(fifo_interface.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(heartbeat_delay.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(heartbeat_timeout.*)/\1/' /etc/strongswan.d/charon/ha.conf
 sed -i -E "s/#\s+(local\s+=).*/\1 ${local_ip}/" /etc/strongswan.d/charon/ha.conf
-# sed -i -E 's/#\s+(monitor.*)/\1/' /etc/strongswan.d/charon/ha.conf
-# sed -i -E 's/#\s+(resync.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(monitor.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(resync.*)/\1/' /etc/strongswan.d/charon/ha.conf
 sed -i -E "s/#\s+(secret\s+=).*/\1 ${secret}/" /etc/strongswan.d/charon/ha.conf
-# sed -i -E 's/#\s+(segment_count.*)/\1/' /etc/strongswan.d/charon/ha.conf
+sed -i -E 's/#\s+(segment_count.*)/\1/' /etc/strongswan.d/charon/ha.conf
 
 # Get all IP addresses for the headless service.
 service_addresses() {
