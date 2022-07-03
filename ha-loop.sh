@@ -12,6 +12,11 @@ fi
 
 mapfile -t remote_ips < <(ha_remote_addresses)
 
+remote_count=0
+for remote_ip in "${remote_ips[@]}"; do
+  echo "Checking if remote is in high availability mode."
+done
+
 if [[ ${#remote_ips[@]} -ge 1 ]]; then
   remote_ip="${remote_ips[0]}"
   current_remote_ip="$(ha_conf_get remote)"
@@ -28,4 +33,4 @@ if [[ ${#remote_ips[@]} -ge 1 ]]; then
 fi
 
 heartbeat_delay="$(ha_conf_get heartbeat_delay)"
-sleep "${heartbeat_delay}e-3"
+sleep "$(( (heartbeat_delay + 999) / 1000 ))"
