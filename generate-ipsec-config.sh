@@ -73,7 +73,6 @@ fi
 
 if ! [[ -f "${client_cert_p12}" ]]; then
   openssl pkcs12 -export \
-    "${vpn_p12_password_args[@]}" \
     -in "${client_cert}" -inkey "${client_key}" \
     -name "client@${vpn_domain}" \
     -certfile "${ca_cert}" \
