@@ -45,8 +45,9 @@ if remote_ip="$(peer_addresses | head -n 1)"; then
   update_remote "${remote_ip}"
 fi
 
-while kill -0 "${server_pid}"; do
-  for peer_address in $(peer_addresses); do
-    nmap -sU "${peer_address}" -p 4510
-  done || true
-done
+# while kill -0 "${server_pid}"; do
+#   for peer_address in $(peer_addresses); do
+#     nmap -sU "${peer_address}" -p 4510
+#   done || true
+# done
+#
