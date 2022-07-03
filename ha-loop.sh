@@ -15,7 +15,11 @@ mapfile -t remote_ips < <(ha_remote_addresses)
 remote_count=0
 for remote_ip in "${remote_ips[@]}"; do
   echo "Checking if remote is in high availability mode."
-  nc -uvz "${remote_ip}" 4510
+  if nc -uvz "${remote_ip}" 4510; then
+    echo "Remote '${remote_ip}' is in high availability mode."
+  else
+    echo "Remote '${remote_ip}' is not in high availability mode."
+  fi
 done
 
 if [[ ${#remote_ips[@]} -ge 1 ]]; then
