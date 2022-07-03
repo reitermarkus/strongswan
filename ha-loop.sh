@@ -20,6 +20,8 @@ for remote_ip in "${remote_ips[@]}"; do
   else
     echo "Remote '${remote_ip}' is not in high availability mode."
   fi
+
+  (( remote_count++ ))
 done
 
 if [[ ${#remote_ips[@]} -ge 1 ]]; then
