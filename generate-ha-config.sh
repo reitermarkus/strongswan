@@ -8,6 +8,8 @@ if [[ -z "${POD_IP-}" ]]; then
   exit
 fi
 
+conf_set /etc/strongswan.d/charon.conf load_modular yes
+
 ha_conf_set autobalance
 ha_conf_set fifo_interface
 ha_conf_set heartbeat_delay

@@ -16,10 +16,7 @@ conf_get() {
 }
 
 ha_conf_set() {
-  local key="${1}"
-  local value="${2-\4}"
-
-  sed -i -E "s/(\\s+)(#\\s*)?(${key})\\s*=\\s*(.*)/\\1\\3 = ${value}/" /etc/strongswan.d/charon/ha.conf
+  conf_set /etc/strongswan.d/charon/ha.conf "${@}"
 }
 
 ha_conf_get() {
