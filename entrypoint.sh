@@ -4,6 +4,7 @@ set -euo pipefail
 
 /configure-strongswan.sh
 /configure-ipsec.sh
+/generate-ha-config.sh
 
 "${@}" &
 server_pid=$!
@@ -16,13 +17,15 @@ wait_for_server() {
 graceful_shutdown() {
   signal="${1}"
   echo "Received ${signal}, shutting down."
-  /graceful-shutdown || kill "${server_pid}"
+  kill -s "${signal}" "${server_pid}"
   wait_for_server
 }
 
 trap 'graceful_shutdown SIGINT' INT
 trap 'graceful_shutdown SIGTERM' TERM
 
-/ha-setup.sh "${server_pid}"
+while kill -0 "${server_pid}"; do
+  /ha-loop.sh "${server_pid}"
+done
 
 wait "${server_pid}"

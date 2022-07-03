@@ -14,3 +14,21 @@ conf_get() {
 
   grep -E "^\\s+${key}\\s*=" "${file}" | sed -E 's/.*=\s*//'
 }
+
+ha_conf_set() {
+  local key="${1}"
+  local value="${2-\4}"
+
+  sed -i -E "s/(\\s+)(#\\s*)?(${key})\\s*=\\s*(.*)/\\1\\3 = ${value}/" /etc/strongswan.d/charon/ha.conf
+}
+
+ha_conf_get() {
+  local key="${1}"
+  grep -E "^\\s+${key}\\s*=" /etc/strongswan.d/charon/ha.conf | sed -E 's/.*=\s*//'
+}
+
+# Get all IP addresses for the headless service, except our own.
+ha_remote_addresses() {
+  nslookup "${HEADLESS_SERVICE}" | awk "/${HEADLESS_SERVICE}/ { f = 1; next } f && /Address:\s+(\d+\.\d+\.\d+\.\d+)/ { print \$2 } f = 0" \
+    | awk "/^${POD_IP}$/ { next } { print }"
+}

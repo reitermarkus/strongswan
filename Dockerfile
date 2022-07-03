@@ -51,7 +51,8 @@ RUN apk add --no-cache \
 COPY common.sh /common.sh
 COPY configure-ipsec.sh /configure-ipsec.sh
 COPY configure-strongswan.sh /configure-strongswan.sh
-COPY ha-setup.sh /ha-setup.sh
+COPY generate-ha-config.sh /generate-ha-config.sh
+COPY ha-loop.sh /ha-loop.sh
 COPY entrypoint.sh /entrypoint.sh
 
 VOLUME /etc/ipsec.d
