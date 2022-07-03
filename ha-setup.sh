@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+server_pid="${1}"
+
 set -euo pipefail
 
 if [[ -z "${POD_IP-}" ]]; then

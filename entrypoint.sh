@@ -23,6 +23,6 @@ graceful_shutdown() {
 trap 'graceful_shutdown SIGINT' INT
 trap 'graceful_shutdown SIGTERM' TERM
 
-/ha-setup.sh
+/ha-setup.sh "${server_pid}"
 
 wait "${server_pid}"
