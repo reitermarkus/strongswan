@@ -2,45 +2,34 @@
 
 set -euo pipefail
 
-if [[ -n "${DEBUG-}" ]]; then
-  set -x
-fi
-
 . /common.sh
 
 server_pid="${1}"
 
-if [[ -z "${POD_IP-}" ]]; then
-  exit
-fi
-
-mapfile -t remote_ips < <(ha_remote_addresses)
-
-remote_count=0
-for remote_ip in "${remote_ips[@]}"; do
-  echo "Checking if remote is in high availability mode."
-  if nc -uvz "${remote_ip}" 4510; then
-    echo "Remote '${remote_ip}' is in high availability mode."
-  else
-    echo "Remote '${remote_ip}' is not in high availability mode."
-  fi
-
-  (( remote_count++ ))
-done
-
-if [[ ${#remote_ips[@]} -ge 1 ]]; then
-  remote_ip="${remote_ips[0]}"
-  current_remote_ip="$(ha_conf_get remote)"
-
-  if [[ "${remote_ip}" != "${current_remote_ip}" ]]; then
-    if [[ ${#remote_ips[@]} -ge 2 ]]; then
-      echo "Warning: Multiple remotes found (${remote_ips[*]}), choosing first."
+switch_remote_if_needed() {
+  local current_remote_ip
+  if current_remote_ip="$(ha_conf_get remote)"; then
+    if is_remote_reachable "${current_remote_ip}"; then
+      echo "Current remote is still reachable." >&2
+      return 0
+    else
+      echo "Current remote is not reachable anymore, checking for new remote." >&2
     fi
-
-    echo "Updating high availability remote to '${remote_ip}'."
-    ha_conf_set remote "${remote_ip}"
-    kill -HUP "${server_pid}"
+  else
+    echo "No remote is currently set, checking for new remote."
   fi
+
+  if remote_ip="$(select_remote)"; then
+    if [[ "${remote_ip}" != "${current_remote_ip}" ]]; then
+      echo "Updating high availability remote to '${remote_ip}'." >&2
+      ha_conf_set remote "${remote_ip}"
+      kill -HUP "${server_pid}"
+    fi
+  fi
+}
+
+if [[ -n "${POD_IP-}" ]] || [[ -n "${HEADLESS_SERVICE-}" ]]; then
+  switch_remote_if_needed
 fi
 
 heartbeat_delay="$(ha_conf_get heartbeat_delay)"

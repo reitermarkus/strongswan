@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+. /common.sh
+
 etc="${ETC:-/etc}"
 ipsec_dir="${IPSEC_DIR:-"${etc}/ipsec.d"}"
 ipsec_conf="${IPSEC_CONF:-"${etc}/ipsec.conf"}"
