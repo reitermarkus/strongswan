@@ -2,75 +2,87 @@
 
 set -euo pipefail
 
-ETC="${ETC:-/etc}"
-IPSEC_DIR="${IPSEC_DIR:-"${ETC}/ipsec.d"}"
-IPSEC_CONF="${IPSEC_CONF:-"${ETC}/ipsec.conf"}"
-IPSEC_SECRETS="${IPSEC_SECRETS:-"${ETC}/ipsec.secrets"}"
+etc="${ETC:-/etc}"
+ipsec_dir="${IPSEC_DIR:-"${etc}/ipsec.d"}"
+ipsec_conf="${IPSEC_CONF:-"${etc}/ipsec.conf"}"
+ipsec_secrets="${IPSEC_SECRETS:-"${etc}/ipsec.secrets"}"
 
-VPN_DOMAIN_REVERSED="$(tr '.' $'\n' <<< "${VPN_DOMAIN}" | tac | paste -s -d '.' -)"
+vpn_name="${VPN_NAME}"
+vpn_domain="${VPN_DOMAIN}"
+vpn_domain_reversed="$(tr '.' $'\n' <<< "${vpn_domain}" | tac | paste -s -d '.' -)"
+vpn_p12_password="${VPN_P12_PASSWORD}"
 
-mkdir -p "${IPSEC_DIR}"/{cacerts,certs,private}
+wifi_ssid="${WIFI_SSID}"
 
-CA_NAME="${VPN_NAME} Root CA"
-CA_KEY="${IPSEC_DIR}/private/ca.pem"
-CA_CERT_BASENAME='ca.cert.pem'
-CA_CERT="${IPSEC_DIR}/cacerts/${CA_CERT_BASENAME}"
+SEARCH_DOMAINS="${SEARCH_DOMAINS:-local}"
+search_domains=''
+for domain in ${SEARCH_DOMAINS//,/ }; do
+  search_domains+="$(printf "\n          <string>%s</string>" "${domain}")"
+done
 
-SERVER_KEY="${IPSEC_DIR}/private/server.pem"
-SERVER_CERT_BASENAME='server.cert.pem'
-SERVER_CERT="${IPSEC_DIR}/certs/${SERVER_CERT_BASENAME}"
+ca_name="${vpn_name} Root CA"
+ca_key="${ipsec_dir}/private/ca.pem"
+ca_cert_basename='ca.cert.pem'
+ca_cert="${ipsec_dir}/cacerts/${ca_cert_basename}"
 
-CLIENT_KEY="${IPSEC_DIR}/private/client.pem"
-CLIENT_CERT="${IPSEC_DIR}/certs/client.cert.pem"
-CLIENT_CERT_P12_BASENAME='client.cert.p12'
-CLIENT_CERT_P12="${IPSEC_DIR}/${CLIENT_CERT_P12_BASENAME}"
-CLIENT_MOBILECONFIG="${IPSEC_DIR}/client.mobileconfig"
+server_key="${ipsec_dir}/private/server.pem"
+server_cert_basename='server.cert.pem'
+server_cert="${ipsec_dir}/certs/${server_cert_basename}"
 
-if ! [[ -f "${CA_KEY}" ]]; then
-  ipsec pki --gen --type rsa --size 4096 --outform pem > "${CA_KEY}"
+client_key="${ipsec_dir}/private/client.pem"
+client_cert="${ipsec_dir}/certs/client.cert.pem"
+client_cert_p12_basename='client.cert.p12'
+client_cert_p12="${ipsec_dir}/${client_cert_p12_basename}"
+client_mobileconfig="${ipsec_dir}/client.mobileconfig"
+
+mkdir -p "${ipsec_dir}"/{cacerts,certs,private}
+
+if ! [[ -f "${ca_key}" ]]; then
+  ipsec pki --gen --type rsa --size 4096 --outform pem > "${ca_key}"
 fi
 
-if ! [[ -f "${CA_CERT}" ]]; then
-  ipsec pki --self --ca --lifetime 3650 --in "${CA_KEY}" \
-    --type rsa --dn "CN=${CA_NAME}" --outform pem > "${CA_CERT}"
+if ! [[ -f "${ca_cert}" ]]; then
+  ipsec pki --self --ca --lifetime 3650 --in "${ca_key}" \
+    --type rsa --dn "CN=${ca_name}" --outform pem > "${ca_cert}"
 fi
 
-if ! [[ -f "${SERVER_KEY}" ]]; then
-  ipsec pki --gen --type rsa --size 4096 --outform pem > "${SERVER_KEY}"
+if ! [[ -f "${server_key}" ]]; then
+  ipsec pki --gen --type rsa --size 4096 --outform pem > "${server_key}"
 fi
 
-if ! [[ -f "${SERVER_CERT}" ]]; then
-  ipsec pki --pub --in "${SERVER_KEY}" --type rsa \
+if ! [[ -f "${server_cert}" ]]; then
+  ipsec pki --pub --in "${server_key}" --type rsa \
     | ipsec pki --issue --lifetime 3650 \
-        --cacert "${CA_CERT}" --cakey "${CA_KEY}" \
-        --dn "CN=${VPN_DOMAIN}" --san "${VPN_DOMAIN}" \
+        --cacert "${ca_cert}" --cakey "${ca_key}" \
+        --dn "CN=${vpn_domain}" --san "${vpn_domain}" \
         --flag serverAuth --flag ikeIntermediate --outform pem \
-        > "${SERVER_CERT}"
+        > "${server_cert}"
 fi
 
-if ! [[ -f "${CLIENT_KEY}" ]]; then
-  ipsec pki --gen --type rsa --size 4096 --outform pem > "${CLIENT_KEY}"
+if ! [[ -f "${client_key}" ]]; then
+  ipsec pki --gen --type rsa --size 4096 --outform pem > "${client_key}"
 fi
 
-if ! [[ -f "${CLIENT_CERT}" ]]; then
-  ipsec pki --pub --in "${CLIENT_KEY}" --type rsa \
+if ! [[ -f "${client_cert}" ]]; then
+  ipsec pki --pub --in "${client_key}" --type rsa \
     | ipsec pki --issue --lifetime 3650 \
-      --cacert "${CA_CERT}" --cakey "${CA_KEY}" \
-      --dn "CN=client@${VPN_DOMAIN}" --san "client@${VPN_DOMAIN}" \
-      --outform pem > "${CLIENT_CERT}"
+      --cacert "${ca_cert}" --cakey "${ca_key}" \
+      --dn "CN=client@${vpn_domain}" --san "client@${vpn_domain}" \
+      --outform pem > "${client_cert}"
 fi
 
-if ! [[ -f "${CLIENT_CERT_P12}" ]]; then
+if ! [[ -f "${client_cert_p12}" ]]; then
   openssl pkcs12 -export \
-    -in "${CLIENT_CERT}" -inkey "${CLIENT_KEY}" \
-    -name "client@${VPN_DOMAIN}" \
-    -certfile "${CA_CERT}" \
-    -caname "${CA_NAME}" \
-    -out "${CLIENT_CERT_P12}" \
-    -passout "pass:${VPN_P12_PASSWORD}"
+    "${vpn_p12_password_args[@]}" \
+    -in "${client_cert}" -inkey "${client_key}" \
+    -name "client@${vpn_domain}" \
+    -certfile "${ca_cert}" \
+    -caname "${ca_name}" \
+    -out "${client_cert_p12}" \
+    -passout "pass:${vpn_p12_password}"
 fi
 
-cat > "${IPSEC_CONF}" <<EOF
+cat > "${ipsec_conf}" <<EOF
 config setup
   charondebug="ike 1, knl 1, cfg 0"
   uniqueids=no
@@ -90,44 +102,44 @@ conn ikev2-vpn
   rekey=no
 
   left=%any
-  leftid="@${VPN_DOMAIN}"
+  leftid="@${vpn_domain}"
   leftauth=pubkey
-  leftca="${CA_CERT}"
-  leftcert="${SERVER_CERT}"
+  leftca="${ca_cert}"
+  leftcert="${server_cert}"
   leftsendcert=always
   leftsubnet=0.0.0.0/0
 
   right=%any
-  rightid="client@${VPN_DOMAIN}"
+  rightid="client@${vpn_domain}"
   rightauth=pubkey
   rightca=%same
-  rightcert="${CLIENT_CERT}"
+  rightcert="${client_cert}"
   rightsourceip=%dhcp
 
   eap_identity=%identity
 EOF
 
-cat > "${IPSEC_SECRETS}" <<EOF
-: RSA "${SERVER_KEY}"
+cat > "${ipsec_secrets}" <<EOF
+: RSA "${server_key}"
 EOF
 
 if uuidgen --sha1 --namespace @dns --name example.org &>/dev/null; then
-  UUID_NAMESPACE="$(uuidgen --sha1 --namespace @dns --name "${VPN_DOMAIN}")"
-  UUID_CA_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${CA_CERT_BASENAME}")"
-  UUID_SERVER_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${SERVER_CERT_BASENAME}")"
-  UUID_P12_CERT="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name "${CLIENT_CERT_P12_BASENAME}")"
-  UUID_VPN_SETTINGS="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name 'com.apple.vpn.managed')"
-  UUID_CONFIGURATION="$(uuidgen --sha1 --namespace "${UUID_NAMESPACE}" --name 'configuration')"
+  uuid_namespace="$(uuidgen --sha1 --namespace @dns --name "${vpn_domain}")"
+  uuid_ca_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${ca_cert_basename}")"
+  uuid_server_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${server_cert_basename}")"
+  uuid_p12_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${client_cert_p12_basename}")"
+  uuid_vpn_settings="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'com.apple.vpn.managed')"
+  uuid_configuration="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'configuration')"
 else
-  UUID_NAMESPACE="$(uuidgen)"
-  UUID_CA_CERT="$(uuidgen)"
-  UUID_SERVER_CERT="$(uuidgen)"
-  UUID_P12_CERT="$(uuidgen)"
-  UUID_VPN_SETTINGS="$(uuidgen)"
-  UUID_CONFIGURATION="$(uuidgen)"
+  uuid_namespace="$(uuidgen)"
+  uuid_ca_cert="$(uuidgen)"
+  uuid_server_cert="$(uuidgen)"
+  uuid_p12_cert="$(uuidgen)"
+  uuid_vpn_settings="$(uuidgen)"
+  uuid_configuration="$(uuidgen)"
 fi
 
-cat > "${CLIENT_MOBILECONFIG}" <<EOF
+cat > "${client_mobileconfig}" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -138,69 +150,69 @@ cat > "${CLIENT_MOBILECONFIG}" <<EOF
       <key>PayloadType</key>
       <string>com.apple.security.root</string>
       <key>PayloadUUID</key>
-      <string>${UUID_CA_CERT}</string>
+      <string>${uuid_ca_cert}</string>
       <key>PayloadIdentifier</key>
-      <string>com.apple.security.root.${UUID_CA_CERT}</string>
+      <string>com.apple.security.root.${uuid_ca_cert}</string>
       <key>PayloadVersion</key>
       <integer>1</integer>
       <key>PayloadDisplayName</key>
-      <string>${CA_NAME}</string>
+      <string>${ca_name}</string>
       <key>PayloadDescription</key>
       <string>CA Certificate</string>
       <key>PayloadCertificateFileName</key>
-      <string>${CA_CERT_BASENAME}</string>
+      <string>${ca_cert_basename}</string>
       <key>PayloadContent</key>
-      <data>$(base64 "${CA_CERT}")</data>
+      <data>$(base64 "${ca_cert}")</data>
     </dict>
     <dict>
       <key>PayloadType</key>
       <string>com.apple.security.pkcs1</string>
       <key>PayloadUUID</key>
-      <string>${UUID_SERVER_CERT}</string>
+      <string>${uuid_server_cert}</string>
       <key>PayloadIdentifier</key>
-      <string>com.apple.security.pkcs1.${UUID_SERVER_CERT}</string>
+      <string>com.apple.security.pkcs1.${uuid_server_cert}</string>
       <key>PayloadVersion</key>
       <integer>1</integer>
       <key>PayloadDisplayName</key>
-      <string>${VPN_NAME} Server Certificate</string>
+      <string>${vpn_name} Server Certificate</string>
       <key>PayloadDescription</key>
       <string>PKCS1 Certificate</string>
       <key>PayloadCertificateFileName</key>
-      <string>${SERVER_CERT_BASENAME}</string>
+      <string>${server_cert_basename}</string>
       <key>PayloadContent</key>
-      <data>$(base64 "${SERVER_CERT}")</data>
+      <data>$(base64 "${server_cert}")</data>
     </dict>
     <dict>
       <key>PayloadType</key>
       <string>com.apple.security.pkcs12</string>
       <key>PayloadUUID</key>
-      <string>${UUID_P12_CERT}</string>
+      <string>${uuid_p12_cert}</string>
       <key>PayloadIdentifier</key>
-      <string>com.apple.security.pkcs12.${UUID_P12_CERT}</string>
+      <string>com.apple.security.pkcs12.${uuid_p12_cert}</string>
       <key>PayloadVersion</key>
       <integer>1</integer>
       <key>PayloadDisplayName</key>
-      <string>${VPN_NAME} Client Certificate</string>
+      <string>${vpn_name} Client Certificate</string>
       <key>PayloadDescription</key>
       <string>PKCS12 Certificate</string>
       <key>PayloadCertificateFileName</key>
-      <string>${CLIENT_CERT_P12_BASENAME}</string>
+      <string>${client_cert_p12_basename}</string>
       <key>PayloadContent</key>
-      <data>$(base64 "${CLIENT_CERT_P12}")</data>
+      <data>$(base64 "${client_cert_p12}")</data>
       <key>Password</key>
-      <string>${VPN_P12_PASSWORD}</string>
+      <string>${vpn_p12_password}</string>
     </dict>
     <dict>
       <key>PayloadType</key>
       <string>com.apple.vpn.managed</string>
       <key>PayloadUUID</key>
-      <string>${UUID_VPN_SETTINGS}</string>
+      <string>${uuid_vpn_settings}</string>
       <key>PayloadIdentifier</key>
-      <string>com.apple.vpn.managed.${UUID_VPN_SETTINGS}</string>
+      <string>com.apple.vpn.managed.${uuid_vpn_settings}</string>
       <key>PayloadVersion</key>
       <real>1</real>
       <key>PayloadDisplayName</key>
-      <string>${VPN_NAME}</string>
+      <string>${vpn_name}</string>
       <key>PayloadDescription</key>
       <string>VPN Settings</string>
       <key>Proxies</key>
@@ -218,12 +230,11 @@ cat > "${CLIENT_MOBILECONFIG}" <<EOF
       <key>DNS</key>
       <dict>
         <key>SearchDomains</key>
-        <array>
-          <string>local</string>
+        <array>${search_domains}
         </array>
       </dict>
       <key>UserDefinedName</key>
-      <string>${VPN_NAME} (IKEv2)</string>
+      <string>${vpn_name} (IKEv2)</string>
       <key>VPNType</key>
       <string>IKEv2</string>
       <key>IKEv2</key>
@@ -263,13 +274,13 @@ cat > "${CLIENT_MOBILECONFIG}" <<EOF
           <integer>1440</integer>
         </dict>
         <key>LocalIdentifier</key>
-        <string>client@${VPN_DOMAIN}</string>
+        <string>client@${vpn_domain}</string>
         <key>PayloadCertificateUUID</key>
-        <string>${UUID_P12_CERT}</string>
+        <string>${uuid_p12_cert}</string>
         <key>RemoteAddress</key>
-        <string>${VPN_DOMAIN}</string>
+        <string>${vpn_domain}</string>
         <key>RemoteIdentifier</key>
-        <string>${VPN_DOMAIN}</string>
+        <string>${vpn_domain}</string>
         <key>UseConfigurationAttributeInternalIPSubnet</key>
         <integer>0</integer>
         <key>OnDemandEnabled</key>
@@ -283,7 +294,7 @@ cat > "${CLIENT_MOBILECONFIG}" <<EOF
             <string>WiFi</string>
             <key>SSIDMatch</key>
             <array>
-              <string>${WIFI_SSID}</string>
+              <string>${wifi_ssid}</string>
             </array>
           </dict>
           <dict>
@@ -309,13 +320,13 @@ cat > "${CLIENT_MOBILECONFIG}" <<EOF
   <key>PayloadType</key>
   <string>Configuration</string>
   <key>PayloadUUID</key>
-  <string>${UUID_CONFIGURATION}</string>
+  <string>${uuid_configuration}</string>
   <key>PayloadIdentifier</key>
-  <string>${VPN_DOMAIN_REVERSED}</string>
+  <string>${vpn_domain_reversed}</string>
   <key>PayloadVersion</key>
   <integer>1</integer>
   <key>PayloadDisplayName</key>
-  <string>${VPN_NAME}</string>
+  <string>${vpn_name}</string>
   <key>PayloadRemovalDisallowed</key>
   <false/>
 </dict>

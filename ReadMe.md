@@ -2,6 +2,16 @@
 
 Starts an IKEv2 VPN server and automatically generates a `.p12` certificate and a `.mobileconfig` configuration file.
 
+## Variables
+
+| Name | Description |
+|------|-------------|
+| `VPN_NAME` | Name of the VPN, e.g. `Example VPN`. |
+| `VPN_DOMAIN` | Domain for accessing the VPN, e.g. `vpn.example.org`. |
+| `VPN_P12_PASSWORD` | Password for the P12 certificate. |
+| `WIFI_SSID` | Name of the WiFi network SSID, e.g. `Example VPN`. |
+| `SEARCH_DOMAINS` | Comma-separated list of search domains for your network, e.g. `local,example.org`. Default to `local`. |
+
 ## Docker Compose Usage
 
 ### `docker-compose.yml`
@@ -26,7 +36,7 @@ services:
       - VPN_NAME=Example VPN
       - WIFI_SSID=Example WiFi
       - VPN_DOMAIN=vpn.example.com
-      - VPN_P12_PASSWORD=password
+      - VPN_P12_PASSWORD=example123
     privileged: yes
     network_mode: host
     restart: unless-stopped
