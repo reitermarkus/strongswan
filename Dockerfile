@@ -1,6 +1,7 @@
 FROM alpine:3.16.0
 
 ARG STRONGSWAN_VERSION=5.9.6
+ARG IPSEC_EXPORTER_VERSION=1.0.0-beta.5
 
 RUN apk add --no-cache \
       bash~=5.1 \
@@ -47,6 +48,12 @@ RUN apk add --no-cache \
  && cd - \
  && rm -r "strongswan-${STRONGSWAN_VERSION}" \
  && apk del .build-deps
+
+RUN export ARCH="$(uname -m)" \
+ && wget --quiet "https://github.com/sergeymakinen/ipsec_exporter/releases/download/v${IPSEC_EXPORTER_VERSION}/ipsec_exporter_${IPSEC_EXPORTER_VERSION}_linux_${ARCH}.tar.gz" \
+ && tar -xzf "ipsec_exporter_${IPSEC_EXPORTER_VERSION}_linux_${ARCH}.tar.gz" \
+ && rm "ipsec_exporter_${IPSEC_EXPORTER_VERSION}_linux_${ARCH}.tar.gz" \
+ && mv ipsec_exporter /usr/local/bin/ipsec_exporter
 
 COPY common.sh /common.sh
 COPY configure-ipsec.sh /configure-ipsec.sh
