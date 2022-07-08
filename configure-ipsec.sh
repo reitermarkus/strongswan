@@ -35,7 +35,7 @@ client_cert_p12_basename='client.cert.p12'
 client_cert_p12="${ipsec_dir}/${client_cert_p12_basename}"
 client_mobileconfig="${ipsec_dir}/client.mobileconfig"
 
-mkdir -p "${ipsec_dir}"/{cacerts,certs,private}
+mkdir -p "${ipsec_dir}"/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private}
 
 if ! [[ -f "${ca_key}" ]]; then
   ipsec pki --gen --type rsa --size 4096 --outform pem > "${ca_key}"

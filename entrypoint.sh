@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
-/generate-ipsec-config.sh
+/configure-strongswan.sh
+/configure-ipsec.sh
 
 exec "${@}"
