@@ -1,6 +1,7 @@
 FROM alpine:3.16.0
 
 ARG STRONGSWAN_VERSION=5.9.6
+ARG S6_OVERLAY_VERSION=3.1.0.1
 
 RUN apk add --no-cache \
       bash~=5.1 \
@@ -10,7 +11,9 @@ RUN apk add --no-cache \
       gmp~=6.2 \
       openssl~=1.1 \
       libcurl~=7.83 \
+      python3~=3.10 \
       sqlite-libs~=3.38 \
+ \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=5.16 \
@@ -46,17 +49,20 @@ RUN apk add --no-cache \
  && make install \
  && cd - \
  && rm -r "strongswan-${STRONGSWAN_VERSION}" \
- && apk del .build-deps
+ && apk del .build-deps \
+ \
+ && ARCH="$(uname -m)" \
+ && export ARCH \
+ && wget --quiet "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz" \
+ && tar -C / -Jxpf s6-overlay-noarch.tar.xz \
+ && rm s6-overlay-noarch.tar.xz \
+ && wget --quiet "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.xz" \
+ && tar -C / -Jxpf "s6-overlay-${ARCH}.tar.xz" \
+ && rm "s6-overlay-${ARCH}.tar.xz"
 
-COPY common.sh /common.sh
-COPY configure-ipsec.sh /configure-ipsec.sh
-COPY configure-strongswan.sh /configure-strongswan.sh
-COPY entrypoint.sh /entrypoint.sh
+ENV PATH="/usr/local/bin:${PATH}"
 
-VOLUME /etc/ipsec.d
+COPY etc /etc
+COPY www /var/www
 
-EXPOSE 500/udp
-EXPOSE 4500/udp
-
-CMD ["ipsec", "start", "--nofork"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/init"]

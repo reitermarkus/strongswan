@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if test "${1}" -eq 256 ; then
+  exit_code=$((128 + ${2}))
+else
+  exit_code="${1}"
+fi
+
+echo "${exit_code}" > /run/s6-linux-init-container-results/exitcode
