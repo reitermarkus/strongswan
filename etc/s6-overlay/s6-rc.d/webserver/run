@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-if [[ "${WEBSERVER-}" == 'false' ]]; then
+if [[ "${WEBSERVER-false}" == 'false' ]]; then
   echo "Webserver disabled."
   exec s6-svc -Od .
 fi
