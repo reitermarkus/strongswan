@@ -19,17 +19,9 @@ Starts an IKEv2 VPN server and automatically generates a `.p12` certificate and 
 ```yml
 version: '3'
 services:
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    environment:
-      - WATCHTOWER_CLEANUP=true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
   strongswan:
     container_name: strongswan
-    image: ghcr.io/reitermarkus/strongswan
+    image: ghcr.io/reitermarkus/strongswan:v1.2.0
     volumes:
       - /etc/ipsec.d:/etc/ipsec.d
     environment:
