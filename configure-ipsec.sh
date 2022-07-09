@@ -14,7 +14,10 @@ vpn_p12_password="${VPN_P12_PASSWORD?}"
 
 wifi_ssid="${WIFI_SSID?}"
 
-SEARCH_DOMAINS="${SEARCH_DOMAINS:-local}"
+if [[ -z "${SEARCH_DOMAINS-}" ]]; then
+  SEARCH_DOMAINS="$(hostname -d)"
+fi
+
 search_domains=''
 for domain in ${SEARCH_DOMAINS//,/ }; do
   search_domains+="$(printf "\n          <string>%s</string>" "${domain}")"
