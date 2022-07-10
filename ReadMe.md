@@ -10,7 +10,7 @@ Starts an IKEv2 VPN server and automatically generates a `.p12` certificate and 
 | `VPN_DOMAIN` | Domain for accessing the VPN, e.g. `vpn.example.org`. |
 | `VPN_P12_PASSWORD` | Password for the P12 certificate. |
 | `WIFI_SSID` | Name of the WiFi network SSID, e.g. `Example WiFi`. |
-| `SEARCH_DOMAINS` | Comma-separated list of search domains for your network, e.g. `local,example.org`. Defaults to `local`. |
+| `SEARCH_DOMAINS` | Comma-separated list of search domains for your network, e.g. `local,example.org`. Defaults to the return value of `hostname -d`. |
 
 ## Docker Compose Usage
 
