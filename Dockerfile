@@ -6,13 +6,13 @@ ARG S6_OVERLAY_VERSION=3.1.0.1
 RUN apk add --no-cache \
       bash~=5.1 \
       iptables~=1.8 \
-      nmap=~7.92 \
+      nmap=~7.93 \
       util-linux~=2.38 \
       gmp~=6.2 \
       openssl~=1.1 \
-      libcurl~=7.83 \
+      libcurl~=7.86 \
       python3~=3.10 \
-      sqlite-libs~=3.38 \
+      sqlite-libs~=3.40 \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
