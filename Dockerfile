@@ -4,7 +4,7 @@ ARG STRONGSWAN_VERSION=5.9.8
 ARG S6_OVERLAY_VERSION=3.1.0.1
 
 RUN apk add --no-cache \
-      bash~=5.1 \
+      bash~=5.2 \
       iptables~=1.8 \
       nmap=~7.93 \
       util-linux~=2.38 \
