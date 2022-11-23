@@ -9,7 +9,7 @@ RUN apk add --no-cache \
       nmap=~7.93 \
       util-linux~=2.38 \
       gmp~=6.2 \
-      openssl~=1.1 \
+      openssl~=3.0 \
       libcurl~=7.86 \
       python3~=3.10 \
       sqlite-libs~=3.40 \
