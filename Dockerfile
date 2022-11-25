@@ -1,25 +1,25 @@
-FROM alpine:3.16.3
+FROM alpine:3.17.0
 
 ARG STRONGSWAN_VERSION=5.9.8
 ARG S6_OVERLAY_VERSION=3.1.0.1
 
 RUN apk add --no-cache \
-      bash~=5.1 \
+      bash~=5.2 \
       iptables~=1.8 \
-      nmap=~7.92 \
+      nmap=~7.93 \
       util-linux~=2.38 \
       gmp~=6.2 \
-      openssl~=1.1 \
-      libcurl~=7.83 \
+      openssl~=3.0 \
+      libcurl~=7.86 \
       python3~=3.10 \
-      sqlite-libs~=3.38 \
+      sqlite-libs~=3.40 \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
-      linux-headers~=5.16 \
+      linux-headers~=5.19 \
       gmp-dev~=6.2 \
-      curl-dev~=7.83 \
-      sqlite-dev~=3.38 \
+      curl-dev~=7.86 \
+      sqlite-dev~=3.40 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && rm "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
