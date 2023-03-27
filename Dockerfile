@@ -1,7 +1,7 @@
 FROM alpine:3.17.2
 
 ARG STRONGSWAN_VERSION=5.9.10
-ARG S6_OVERLAY_VERSION=3.1.0.1
+ARG S6_OVERLAY_VERSION=3.1.4.1
 
 RUN apk add --no-cache \
       bash~=5.2 \
