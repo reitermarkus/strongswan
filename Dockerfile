@@ -18,7 +18,7 @@ RUN apk add --no-cache \
       build-base~=0.5 \
       linux-headers~=5.19 \
       gmp-dev~=6.2 \
-      curl-dev~=7.86 \
+      curl-dev~=7.88 \
       sqlite-dev~=3.40 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
