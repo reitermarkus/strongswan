@@ -65,4 +65,7 @@ ENV PATH="/usr/local/bin:${PATH}"
 COPY etc /etc
 COPY www /var/www
 
+# Generating keys takes longer than the default timeout of 5 seconds.
+ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
+
 ENTRYPOINT ["/init"]
