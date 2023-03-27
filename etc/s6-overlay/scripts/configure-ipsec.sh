@@ -169,7 +169,7 @@ cat > "${client_mobileconfig}" <<EOF
       <key>PayloadCertificateFileName</key>
       <string>${ca_cert_basename}</string>
       <key>PayloadContent</key>
-      <data>$(base64 "${ca_cert}")</data>
+      <data>$(base64 -w 0 "${ca_cert}")</data>
     </dict>
     <dict>
       <key>PayloadType</key>
@@ -187,7 +187,7 @@ cat > "${client_mobileconfig}" <<EOF
       <key>PayloadCertificateFileName</key>
       <string>${server_cert_basename}</string>
       <key>PayloadContent</key>
-      <data>$(base64 "${server_cert}")</data>
+      <data>$(base64 -w 0 "${server_cert}")</data>
     </dict>
     <dict>
       <key>PayloadType</key>
@@ -205,7 +205,7 @@ cat > "${client_mobileconfig}" <<EOF
       <key>PayloadCertificateFileName</key>
       <string>${client_cert_p12_basename}</string>
       <key>PayloadContent</key>
-      <data>$(base64 "${client_cert_p12}")</data>
+      <data>$(base64 -w 0 "${client_cert_p12}")</data>
       <key>Password</key>
       <string>${vpn_p12_password}</string>
     </dict>
