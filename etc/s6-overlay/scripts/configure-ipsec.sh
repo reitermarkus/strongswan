@@ -94,6 +94,7 @@ fi
 if ! [[ -f "${client_cert_p12}" ]]; then
   tmp="$(mktemp)"
   openssl pkcs12 -export \
+    -legacy \
     -in "${client_cert}" -inkey "${client_key}" \
     -name "client@${vpn_domain}" \
     -certfile "${ca_cert}" \
