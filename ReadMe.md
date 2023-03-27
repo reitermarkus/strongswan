@@ -23,7 +23,7 @@ version: '3'
 services:
   strongswan:
     container_name: strongswan
-    image: ghcr.io/reitermarkus/strongswan:v1.4.0
+    image: ghcr.io/reitermarkus/strongswan:v1.5.0
     volumes:
       - /etc/ipsec.d:/etc/ipsec.d
     environment:
