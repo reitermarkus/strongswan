@@ -3,6 +3,14 @@
 
 set -euo pipefail
 
+# Ensure testing on macOS behaves the same.
+if [[ "$(uname -s)" == Darwin ]]; then
+  PATH="$(brew --prefix coreutils)/libexec/gnubin:${PATH}"
+  PATH="$(brew --prefix util-linux)/bin:${PATH}"
+  PATH="$(brew --prefix openssl)/bin:${PATH}"
+  export PATH
+fi
+
 SCRIPT_DIR="$(dirname "${0}")"
 # shellcheck source=etc/s6-overlay/scripts/common.sh
 source "${SCRIPT_DIR}/common.sh"
@@ -145,21 +153,12 @@ cat > "${ipsec_secrets}" <<EOF
 : RSA "${server_key}"
 EOF
 
-if uuidgen --sha1 --namespace @dns --name example.org &>/dev/null; then
-  uuid_namespace="$(uuidgen --sha1 --namespace @dns --name "${vpn_domain}")"
-  uuid_ca_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${ca_cert_basename}")"
-  uuid_server_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${server_cert_basename}")"
-  uuid_p12_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${client_cert_p12_basename}")"
-  uuid_vpn_settings="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'com.apple.vpn.managed')"
-  uuid_configuration="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'configuration')"
-else
-  uuid_namespace="$(uuidgen)"
-  uuid_ca_cert="$(uuidgen)"
-  uuid_server_cert="$(uuidgen)"
-  uuid_p12_cert="$(uuidgen)"
-  uuid_vpn_settings="$(uuidgen)"
-  uuid_configuration="$(uuidgen)"
-fi
+uuid_namespace="$(uuidgen --sha1 --namespace @dns --name "${vpn_domain}")"
+uuid_ca_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${ca_cert_basename}")"
+uuid_server_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${server_cert_basename}")"
+uuid_p12_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${client_cert_p12_basename}")"
+uuid_vpn_settings="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'com.apple.vpn.managed')"
+uuid_configuration="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'configuration')"
 
 cat > "${client_mobileconfig}" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
