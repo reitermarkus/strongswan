@@ -12,7 +12,7 @@ RUN apk add --no-cache \
       openssl~=3.1 \
       libcurl~=8.1 \
       python3~=3.11 \
-      sqlite-libs~=3.40 \
+      sqlite-libs~=3.41 \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
