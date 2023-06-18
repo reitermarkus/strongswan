@@ -9,9 +9,9 @@ RUN apk add --no-cache \
       nmap=~7.93 \
       util-linux~=2.38 \
       gmp~=6.2 \
-      openssl~=3.0 \
-      libcurl~=7.88 \
-      python3~=3.10 \
+      openssl~=3.1 \
+      libcurl~=8.1 \
+      python3~=3.11 \
       sqlite-libs~=3.40 \
  \
  && apk add --no-cache --virtual .build-deps \
