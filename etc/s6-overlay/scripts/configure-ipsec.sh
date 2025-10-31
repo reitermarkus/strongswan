@@ -265,11 +265,11 @@ cat > "${client_mobileconfig}" <<EOF
         <key>ChildSecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>2</integer>
+          <integer>19</integer>
           <key>EncryptionAlgorithm</key>
-          <string>3DES</string>
+          <string>ChaCha20Poly1305</string>
           <key>IntegrityAlgorithm</key>
-          <string>SHA1-96</string>
+          <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
         </dict>
@@ -286,11 +286,11 @@ cat > "${client_mobileconfig}" <<EOF
         <key>IKESecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>2</integer>
+          <integer>19</integer>
           <key>EncryptionAlgorithm</key>
-          <string>3DES</string>
+          <string>ChaCha20Poly1305</string>
           <key>IntegrityAlgorithm</key>
-          <string>SHA1-96</string>
+          <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
         </dict>
