@@ -122,8 +122,8 @@ conn ikev2-vpn
   compress=no
   type=tunnel
   keyexchange=ikev2
-  ike=aes256-sha256-modp1024,3des-sha1-modp1024,aes256-sha1-modp1024!
-  esp=aes256-sha256,3des-sha1,aes256-sha1!
+  ike=chacha20poly1305-prfsha256-newhope128,chacha20poly1305-prfsha256-ecp256,aes128gcm16-prfsha256-ecp256,aes256-sha256-modp2048,aes256-sha256-modp1024!
+  esp=chacha20poly1305-newhope128,chacha20poly1305-ecp256,aes128gcm16-ecp256,aes256-sha256-modp2048,aes256-sha256,aes256-sha1!
   fragmentation=yes
   forceencaps=yes
 
@@ -271,7 +271,7 @@ cat > "${client_mobileconfig}" <<EOF
           <key>IntegrityAlgorithm</key>
           <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
-          <integer>1440</integer>
+          <integer>20</integer>
         </dict>
         <key>DeadPeerDetectionRate</key>
         <string>Medium</string>
@@ -282,7 +282,7 @@ cat > "${client_mobileconfig}" <<EOF
         <key>EnableCertificateRevocationCheck</key>
         <integer>0</integer>
         <key>EnablePFS</key>
-        <integer>0</integer>
+        <integer>1</integer>
         <key>IKESecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
@@ -292,7 +292,7 @@ cat > "${client_mobileconfig}" <<EOF
           <key>IntegrityAlgorithm</key>
           <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
-          <integer>1440</integer>
+          <integer>59</integer>
         </dict>
         <key>LocalIdentifier</key>
         <string>client@${vpn_domain}</string>
