@@ -16,7 +16,7 @@ RUN apk add --no-cache \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
-      linux-headers~=5.19 \
+      linux-headers~=6.14 \
       gmp-dev~=6.3 \
       curl-dev~=8.14 \
       sqlite-dev~=3.49 \
