@@ -271,7 +271,7 @@ cat > "${client_mobileconfig}" <<EOF
           <key>IntegrityAlgorithm</key>
           <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
-          <integer>20</integer>
+          <integer>1440</integer>
         </dict>
         <key>DeadPeerDetectionRate</key>
         <string>Medium</string>
@@ -292,7 +292,7 @@ cat > "${client_mobileconfig}" <<EOF
           <key>IntegrityAlgorithm</key>
           <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
-          <integer>59</integer>
+          <integer>1440</integer>
         </dict>
         <key>LocalIdentifier</key>
         <string>client@${vpn_domain}</string>
