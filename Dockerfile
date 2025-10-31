@@ -7,12 +7,12 @@ RUN apk add --no-cache \
       bash~=5.2 \
       iptables~=1.8 \
       nmap=~7.93 \
-      util-linux~=2.38 \
+      util-linux~=2.41 \
       gmp~=6.2 \
-      openssl~=3.0 \
+      openssl~=3.5 \
       libcurl~=7.88 \
-      python3~=3.10 \
-      sqlite-libs~=3.40 \
+      python3~=3.12 \
+      sqlite-libs~=3.49 \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
