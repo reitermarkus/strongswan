@@ -55,27 +55,27 @@ mkdir -p "${ipsec_dir}"/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private}
 
 if ! [[ -f "${ca_key}" ]]; then
   tmp="$(mktemp)"
-  ipsec pki --gen --type rsa --size 4096 --outform pem > "${tmp}"
+  pki --gen --type rsa --size 4096 --outform pem > "${tmp}"
   mv "${tmp}" "${ca_key}"
 fi
 
 if ! [[ -f "${ca_cert}" ]]; then
   tmp="$(mktemp)"
-  ipsec pki --self --ca --lifetime 3650 --in "${ca_key}" \
+  pki --self --ca --lifetime 3650 --in "${ca_key}" \
     --type rsa --dn "CN=${ca_name}" --outform pem > "${tmp}"
   mv "${tmp}" "${ca_cert}"
 fi
 
 if ! [[ -f "${server_key}" ]]; then
   tmp="$(mktemp)"
-  ipsec pki --gen --type rsa --size 4096 --outform pem > "${tmp}"
+  pki --gen --type rsa --size 4096 --outform pem > "${tmp}"
   mv "${tmp}" "${server_key}"
 fi
 
 if ! [[ -f "${server_cert}" ]]; then
   tmp="$(mktemp)"
-  ipsec pki --pub --in "${server_key}" --type rsa \
-    | ipsec pki --issue --lifetime 3650 \
+  pki --pub --in "${server_key}" --type rsa \
+    | pki --issue --lifetime 3650 \
         --cacert "${ca_cert}" --cakey "${ca_key}" \
         --dn "CN=${vpn_domain}" --san "${vpn_domain}" \
         --flag serverAuth --flag ikeIntermediate --outform pem \
@@ -85,14 +85,14 @@ fi
 
 if ! [[ -f "${client_key}" ]]; then
   tmp="$(mktemp)"
-  ipsec pki --gen --type rsa --size 4096 --outform pem > "${tmp}"
+  pki --gen --type rsa --size 4096 --outform pem > "${tmp}"
   mv "${tmp}" "${client_key}"
 fi
 
 if ! [[ -f "${client_cert}" ]]; then
   tmp="$(mktemp)"
-  ipsec pki --pub --in "${client_key}" --type rsa \
-    | ipsec pki --issue --lifetime 3650 \
+  pki --pub --in "${client_key}" --type rsa \
+    | pki --issue --lifetime 3650 \
       --cacert "${ca_cert}" --cakey "${ca_key}" \
       --dn "CN=client@${vpn_domain}" --san "client@${vpn_domain}" \
       --outform pem > "${tmp}"
