@@ -23,7 +23,7 @@ version: '3'
 services:
   strongswan:
     container_name: strongswan
-    image: ghcr.io/reitermarkus/strongswan:v1.5.0
+    image: ghcr.io/reitermarkus/strongswan:latest
     volumes:
       - /etc/swanctl:/etc/swanctl
     environment:
@@ -36,9 +36,8 @@ services:
     restart: unless-stopped
 ```
 
-You can either find the certificate and configuartion files directly on the host in the mounted directory specified or alternatively you can copy them out of the running container using
+If `WEBSERVER` is `false`, you can copy the configuration file out of the running container using
 
 ```sh
-docker cp strongswan:/etc/swanctl/client.mobileconfig .
-docker cp strongswan:/etc/swanctl/client.cert.p12 .
+docker cp strongswan:/var/www/localhost/htdocs/client.mobileconfig .
 ```

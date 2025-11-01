@@ -46,7 +46,6 @@ client_key="${swanctl_dir}/private/client.pem"
 client_cert="${swanctl_dir}/x509/client.cert.pem"
 client_cert_p12_basename='client.cert.p12'
 client_cert_p12="${swanctl_dir}/${client_cert_p12_basename}"
-client_mobileconfig="${swanctl_dir}/client.mobileconfig"
 
 if ! [[ -f "${ca_key}" ]]; then
   tmp="$(mktemp)"
@@ -159,7 +158,7 @@ uuid_p12_cert="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name "${client
 uuid_vpn_settings="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'com.apple.vpn.managed')"
 uuid_configuration="$(uuidgen --sha1 --namespace "${uuid_namespace}" --name 'configuration')"
 
-cat > "${client_mobileconfig}" <<EOF
+cat > /var/www/localhost/htdocs/client.mobileconfig <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -261,6 +260,10 @@ cat > "${client_mobileconfig}" <<EOF
       <dict>
         <key>AuthenticationMethod</key>
         <string>Certificate</string>
+        <key>ExtendedAuthEnabled</key>
+        <integer>0</integer>
+        <key>PayloadCertificateUUID</key>
+        <string>${uuid_p12_cert}</string>
         <key>ChildSecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
@@ -295,8 +298,6 @@ cat > "${client_mobileconfig}" <<EOF
         </dict>
         <key>LocalIdentifier</key>
         <string>client@${vpn_domain}</string>
-        <key>PayloadCertificateUUID</key>
-        <string>${uuid_p12_cert}</string>
         <key>RemoteAddress</key>
         <string>${vpn_domain}</string>
         <key>RemoteIdentifier</key>
