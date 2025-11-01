@@ -19,7 +19,13 @@ vpn_p12_password="${VPN_P12_PASSWORD?}"
 wifi_ssid="${WIFI_SSID?}"
 
 if [[ -z "${SEARCH_DOMAINS-}" ]]; then
-  SEARCH_DOMAINS="$(hostname -d)"
+  # Try getting domain.
+  if search_domain="$(hostname -d 2>/dev/null)"; then
+    SEARCH_DOMAINS="${search_domain}"
+  else
+    # shellcheck disable=SC2016
+    echo 'Failed to get domain with `hostname -d`.' >&2
+  fi
 fi
 
 search_domains=''
