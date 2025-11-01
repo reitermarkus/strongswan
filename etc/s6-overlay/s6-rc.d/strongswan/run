@@ -1,2 +1,2 @@
 #!/command/execlineb -P
-ipsec start --nofork
+/usr/local/libexec/ipsec/charon
