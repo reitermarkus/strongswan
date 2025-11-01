@@ -8,8 +8,7 @@ SCRIPT_DIR="$(dirname "${0}")"
 source "${SCRIPT_DIR}/common.sh"
 
 etc="${ETC:-/etc}"
-ipsec_dir="${IPSEC_DIR:-"${etc}/ipsec.d"}"
-ipsec_secrets="${IPSEC_SECRETS:-"${etc}/ipsec.secrets"}"
+swanctl_dir="${SWANCTL_DIR:-"${etc}/swanctl"}"
 
 vpn_name="${VPN_NAME?}"
 vpn_domain="${VPN_DOMAIN?}"
@@ -34,21 +33,19 @@ for domain in ${SEARCH_DOMAINS//,/ }; do
 done
 
 ca_name="${vpn_name} Root CA"
-ca_key="${ipsec_dir}/private/ca.pem"
+ca_key="${swanctl_dir}/private/ca.pem"
 ca_cert_basename='ca.cert.pem'
-ca_cert="${ipsec_dir}/cacerts/${ca_cert_basename}"
+ca_cert="${swanctl_dir}/x509ca/${ca_cert_basename}"
 
-server_key="${ipsec_dir}/private/server.pem"
+server_key="${swanctl_dir}/private/server.pem"
 server_cert_basename='server.cert.pem'
-server_cert="${ipsec_dir}/certs/${server_cert_basename}"
+server_cert="${swanctl_dir}/x509/${server_cert_basename}"
 
-client_key="${ipsec_dir}/private/client.pem"
-client_cert="${ipsec_dir}/certs/client.cert.pem"
+client_key="${swanctl_dir}/private/client.pem"
+client_cert="${swanctl_dir}/x509/client.cert.pem"
 client_cert_p12_basename='client.cert.p12'
-client_cert_p12="${ipsec_dir}/${client_cert_p12_basename}"
-client_mobileconfig="${ipsec_dir}/client.mobileconfig"
-
-mkdir -p "${ipsec_dir}"/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private}
+client_cert_p12="${swanctl_dir}/${client_cert_p12_basename}"
+client_mobileconfig="${swanctl_dir}/client.mobileconfig"
 
 if ! [[ -f "${ca_key}" ]]; then
   tmp="$(mktemp)"
@@ -152,10 +149,6 @@ connections {
     }
   }
 }
-EOF
-
-cat > "${ipsec_secrets}" <<EOF
-: RSA "${server_key}"
 EOF
 
 uuid_namespace="$(uuidgen --sha1 --namespace @dns --name "${vpn_domain}")"
