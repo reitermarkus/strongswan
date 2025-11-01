@@ -124,8 +124,8 @@ connections {
     local_addrs = %any
     remote_addrs = %any
     send_cert = always
-    pools=dhcp
-    proposals=chacha20poly1305-prfsha512-x448
+    pools = dhcp
+    proposals = chacha20poly1305-prfsha512-x448,aes256-sha256-modp2048
 
     local {
       id = "@${vpn_domain}"
@@ -144,7 +144,7 @@ connections {
       ikev2-vpn {
         life_time = 0
         local_ts = 0.0.0.0/0
-        esp_proposals = chacha20poly1305
+        esp_proposals = chacha20poly1305-prfsha512-x448-none,aes256-sha256-modp2048-none
       }
     }
   }
@@ -263,11 +263,11 @@ cat > "${client_mobileconfig}" <<EOF
         <key>ChildSecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>32</integer>
+          <integer>14</integer>
           <key>EncryptionAlgorithm</key>
-          <string>ChaCha20Poly1305</string>
+          <string>AES-256</string>
           <key>IntegrityAlgorithm</key>
-          <string>SHA2-512</string>
+          <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
         </dict>
@@ -284,11 +284,11 @@ cat > "${client_mobileconfig}" <<EOF
         <key>IKESecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>32</integer>
+          <integer>14</integer>
           <key>EncryptionAlgorithm</key>
-          <string>ChaCha20Poly1305</string>
+          <string>AES-256</string>
           <key>IntegrityAlgorithm</key>
-          <string>SHA2-512</string>
+          <string>SHA2-256</string>
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
         </dict>
