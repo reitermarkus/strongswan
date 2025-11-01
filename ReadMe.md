@@ -25,7 +25,7 @@ services:
     container_name: strongswan
     image: ghcr.io/reitermarkus/strongswan:v1.5.0
     volumes:
-      - /etc/ipsec.d:/etc/ipsec.d
+      - /etc/swanctl:/etc/swanctl
     environment:
       - VPN_NAME=Example VPN
       - WIFI_SSID=Example WiFi
@@ -39,6 +39,6 @@ services:
 You can either find the certificate and configuartion files directly on the host in the mounted directory specified or alternatively you can copy them out of the running container using
 
 ```sh
-docker cp strongswan:/etc/ipsec.d/client.mobileconfig .
-docker cp strongswan:/etc/ipsec.d/client.cert.p12 .
+docker cp strongswan:/etc/swanctl/client.mobileconfig .
+docker cp strongswan:/etc/swanctl/client.cert.p12 .
 ```

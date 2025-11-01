@@ -1,1 +1,1 @@
-ln -sfn /etc/ipsec.d/client.mobileconfig /var/www/client.mobileconfig
+ln -sfn /etc/swanctl/client.mobileconfig /var/www/client.mobileconfig
