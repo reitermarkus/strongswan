@@ -3,21 +3,12 @@
 
 set -euo pipefail
 
-# Ensure testing on macOS behaves the same.
-if [[ "$(uname -s)" == Darwin ]]; then
-  PATH="$(brew --prefix coreutils)/libexec/gnubin:${PATH}"
-  PATH="$(brew --prefix util-linux)/bin:${PATH}"
-  PATH="$(brew --prefix openssl)/bin:${PATH}"
-  export PATH
-fi
-
 SCRIPT_DIR="$(dirname "${0}")"
 # shellcheck source=etc/s6-overlay/scripts/common.sh
 source "${SCRIPT_DIR}/common.sh"
 
 etc="${ETC:-/etc}"
 ipsec_dir="${IPSEC_DIR:-"${etc}/ipsec.d"}"
-ipsec_conf="${IPSEC_CONF:-"${etc}/ipsec.conf"}"
 ipsec_secrets="${IPSEC_SECRETS:-"${etc}/ipsec.secrets"}"
 
 vpn_name="${VPN_NAME?}"
@@ -112,41 +103,48 @@ if ! [[ -f "${client_cert_p12}" ]]; then
   mv "${tmp}" "${client_cert_p12}"
 fi
 
-cat > "${ipsec_conf}" <<EOF
-config setup
-  charondebug="ike 1, knl 1, cfg 0"
-  uniqueids=no
+cat > "${etc}/strongswan.d/charon-load-all.conf" <<EOF
+charon {
+  start-scripts {
+    all = swanctl --load-all
+  }
+}
+EOF
 
-conn ikev2-vpn
-  auto=add
-  compress=no
-  type=tunnel
-  keyexchange=ikev2
-  ike=chacha20poly1305-prfsha256-newhope128,chacha20poly1305-prfsha256-ecp256,aes128gcm16-prfsha256-ecp256,aes256-sha256-modp2048,aes256-sha256-modp1024!
-  esp=chacha20poly1305-newhope128,chacha20poly1305-ecp256,aes128gcm16-ecp256,aes256-sha256-modp2048,aes256-sha256,aes256-sha1!
-  fragmentation=yes
-  forceencaps=yes
+cat > "${etc}/swanctl/conf.d/ikev2-vpn.conf" <<EOF
+connections {
+  ikev2-vpn {
+    version = 2
+    encap = yes
+    dpd_delay = 300s
+    rekey_time = 0
+    local_addrs = %any
+    remote_addrs = %any
+    send_cert = always
+    pools=dhcp
 
-  dpdaction=clear
-  dpddelay=300s
-  rekey=no
+    local {
+      id = "@${vpn_domain}"
+      auth = pubkey
+      certs = "${server_cert}"
+    }
 
-  left=%any
-  leftid="@${vpn_domain}"
-  leftauth=pubkey
-  leftca="${ca_cert}"
-  leftcert="${server_cert}"
-  leftsendcert=always
-  leftsubnet=0.0.0.0/0
+    remote {
+      id = "client@${vpn_domain}"
+      auth = pubkey
+      cacerts = "${ca_cert}"
+      certs = "${client_cert}"
+      eap_id = %any
+    }
 
-  right=%any
-  rightid="client@${vpn_domain}"
-  rightauth=pubkey
-  rightca=%same
-  rightcert="${client_cert}"
-  rightsourceip=%dhcp
-
-  eap_identity=%identity
+    children {
+      ikev2-vpn {
+        life_time = 0
+        local_ts = 0.0.0.0/0
+      }
+    }
+  }
+}
 EOF
 
 cat > "${ipsec_secrets}" <<EOF
