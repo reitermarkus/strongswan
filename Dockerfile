@@ -10,16 +10,15 @@ RUN apk add --no-cache \
       iptables~=1.8 \
       nmap=~7.97 \
       util-linux~=2.41 \
-      gmp~=6.3 \
-      openssl~=3.5 \
-      libcurl~=8.14 \
+      gmp=6.3.0-r3 \
+      openssl=3.5.4-r0 \
       python3~=3.12 \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.14 \
-      gmp-dev~=6.3 \
-      curl-dev~=8.14 \
+      gmp-dev=6.3.0-r3 \
+      openssl-dev=3.5.4-r0 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && rm "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
@@ -27,7 +26,6 @@ RUN apk add --no-cache \
  && ./configure --prefix=/usr/local --sysconfdir=/etc \
       --enable-ha \
       --enable-openssl \
-      --enable-curl \
       --enable-bypass-lan \
       --enable-farp \
       --enable-eap-identity \
