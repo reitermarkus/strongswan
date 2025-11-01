@@ -128,7 +128,7 @@ connections {
     remote_addrs = %any
     send_cert = always
     pools=dhcp
-    proposals=chacha20poly1305-sha2_512-prfsha384-prfsha256-x448
+    proposals=chacha20poly1305-prfsha512-x448
 
     local {
       id = "@${vpn_domain}"
