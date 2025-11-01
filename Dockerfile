@@ -19,7 +19,7 @@ RUN apk add --no-cache \
       linux-headers~=6.14 \
       gmp-dev=6.3.0-r3 \
       openssl-dev=3.5.4-r0 \
-&& wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
+ && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && rm "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && cd "strongswan-${STRONGSWAN_VERSION}" \
