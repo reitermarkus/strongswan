@@ -14,14 +14,12 @@ RUN apk add --no-cache \
       openssl~=3.5 \
       libcurl~=8.14 \
       python3~=3.12 \
-      sqlite-libs~=3.49 \
  \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.14 \
       gmp-dev~=6.3 \
       curl-dev~=8.14 \
-      sqlite-dev~=3.49 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && rm "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
@@ -30,7 +28,6 @@ RUN apk add --no-cache \
       --enable-ha \
       --enable-openssl \
       --enable-curl \
-      --enable-sqlite \
       --enable-bypass-lan \
       --enable-farp \
       --enable-eap-identity \
