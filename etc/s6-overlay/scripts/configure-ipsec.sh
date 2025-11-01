@@ -138,13 +138,13 @@ connections {
       auth = pubkey
       cacerts = "${ca_cert}"
       certs = "${client_cert}"
-      eap_id = %any
     }
 
     children {
       ikev2-vpn {
         life_time = 0
         local_ts = 0.0.0.0/0
+        esp_proposals = chacha20poly1305
       }
     }
   }
