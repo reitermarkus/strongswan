@@ -7,13 +7,12 @@ ARG S6_OVERLAY_VERSION=3.1.4.1
 
 RUN apk add --no-cache \
       bash~=5.2 \
+      darkhttpd=1.16-r0 \
       iptables~=1.8 \
       nmap=~7.97 \
       util-linux~=2.41 \
       gmp=6.3.0-r3 \
       openssl=3.5.4-r0 \
-      python3~=3.12 \
- \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.14 \
@@ -61,7 +60,7 @@ RUN apk add --no-cache \
 ENV PATH="/usr/local/bin:${PATH}"
 
 COPY etc /etc
-COPY www /var/www
+COPY www /var/www/localhost/htdocs
 
 # Generating keys takes longer than the default timeout of 5 seconds.
 ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0

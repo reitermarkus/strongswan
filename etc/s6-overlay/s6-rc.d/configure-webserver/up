@@ -1,1 +1,0 @@
-ln -sfn /etc/swanctl/client.mobileconfig /var/www/client.mobileconfig
