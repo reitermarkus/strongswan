@@ -122,6 +122,7 @@ connections {
     remote_addrs = %any
     send_cert = always
     pools=dhcp
+    proposals=chacha20poly1305-sha2_512-prfsha384-prfsha256-x448
 
     local {
       id = "@${vpn_domain}"
@@ -263,11 +264,11 @@ cat > "${client_mobileconfig}" <<EOF
         <key>ChildSecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>19</integer>
+          <integer>32</integer>
           <key>EncryptionAlgorithm</key>
           <string>ChaCha20Poly1305</string>
           <key>IntegrityAlgorithm</key>
-          <string>SHA2-256</string>
+          <string>SHA2-512</string>
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
         </dict>
@@ -284,11 +285,11 @@ cat > "${client_mobileconfig}" <<EOF
         <key>IKESecurityAssociationParameters</key>
         <dict>
           <key>DiffieHellmanGroup</key>
-          <integer>19</integer>
+          <integer>32</integer>
           <key>EncryptionAlgorithm</key>
           <string>ChaCha20Poly1305</string>
           <key>IntegrityAlgorithm</key>
-          <string>SHA2-256</string>
+          <string>SHA2-512</string>
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
         </dict>
