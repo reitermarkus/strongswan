@@ -24,6 +24,7 @@ if [[ -z "${SEARCH_DOMAINS-}" ]]; then
   else
     # shellcheck disable=SC2016
     echo 'Failed to get domain with `hostname -d`.' >&2
+    SEARCH_DOMAINS=""
   fi
 fi
 
