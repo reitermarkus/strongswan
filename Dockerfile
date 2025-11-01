@@ -44,6 +44,7 @@ RUN apk add --no-cache \
       --enable-eap-radius \
       --enable-eap-tls \
       --enable-xauth-eap \
+      --enable-chapoly \
       --enable-dhcp \
       --enable-unity \
       --enable-counters \
