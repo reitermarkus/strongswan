@@ -12,11 +12,11 @@ RUN apk add --no-cache \
       nmap=~7.97 \
       util-linux~=2.41 \
       gmp=6.3.0-r4 \
-      openssl=3.5.4-r0 \
+      openssl=3.5.5-r0 \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.14 \
-      gmp-dev=6.3.0-r3 \
+      gmp-dev=6.3.0-r4 \
       openssl-dev=3.5.5-r0 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
