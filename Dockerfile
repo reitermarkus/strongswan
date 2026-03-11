@@ -15,7 +15,7 @@ RUN apk add --no-cache \
       openssl=3.5.5-r0 \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
-      linux-headers~=6.14 \
+      linux-headers~=6.16 \
       gmp-dev=6.3.0-r4 \
       openssl-dev=3.5.5-r0 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
