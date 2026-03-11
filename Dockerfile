@@ -6,18 +6,18 @@ ARG STRONGSWAN_VERSION=6.0.4
 ARG S6_OVERLAY_VERSION=3.1.4.1
 
 RUN apk add --no-cache \
-      bash~=5.2 \
-      darkhttpd=1.16-r0 \
+      bash~=5.3 \
+      darkhttpd=1.17-r0 \
       iptables~=1.8 \
       nmap=~7.97 \
       util-linux~=2.41 \
-      gmp=6.3.0-r3 \
+      gmp=6.3.0-r4 \
       openssl=3.5.4-r0 \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.14 \
       gmp-dev=6.3.0-r3 \
-      openssl-dev=3.5.4-r0 \
+      openssl-dev=3.5.5-r0 \
  && wget --quiet "https://download.strongswan.org/strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && tar -xjf "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
  && rm "strongswan-${STRONGSWAN_VERSION}.tar.bz2" \
