@@ -12,7 +12,7 @@ RUN apk add --no-cache \
       nmap=~7.97 \
       util-linux~=2.41 \
       gmp=6.3.0-r4 \
-      openssl=3.5.5-r0 \
+      openssl=3.5.8-r0 \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.16 \
