@@ -1,4 +1,4 @@
-FROM alpine:3.23.3
+FROM alpine:3.24.4@sha256:93b41ef40b1677fce8fcc64ff4af09daddfacf5040afde618bc46c1e2d1cc7d4
 
 # renovate: datasource=github-releases depName=strongswan packageName=strongswan/strongswan
 ARG STRONGSWAN_VERSION=6.0.4
