@@ -9,10 +9,10 @@ RUN apk add --no-cache \
       bash~=5.3 \
       darkhttpd=1.17-r0 \
       iptables~=1.8 \
-      nmap=~7.97 \
-      util-linux~=2.41 \
+      nmap=~7.99 \
+      util-linux~=2.42 \
       gmp=6.3.0-r4 \
-      openssl=3.5.5-r0 \
+      openssl=3.5.9-r0 \
  && apk add --no-cache --virtual .build-deps \
       build-base~=0.5 \
       linux-headers~=6.16 \
