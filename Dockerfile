@@ -1,7 +1,7 @@
 FROM alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
 
 # renovate: datasource=github-releases depName=strongswan packageName=strongswan/strongswan
-ARG STRONGSWAN_VERSION=6.0.4
+ARG STRONGSWAN_VERSION=6.1.0
 # renovate: datasource=github-releases depName=s6-overlay packageName=just-containers/s6-overlay
 ARG S6_OVERLAY_VERSION=3.1.4.1
 
